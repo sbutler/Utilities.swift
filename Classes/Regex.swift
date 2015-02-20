@@ -102,7 +102,7 @@ public class Regex {
             :returns: Subscript for the capture group.
         */
         public subscript(index: Int) -> String {
-            return subject.substringWithRange(ranges[index])
+            return subject[ranges[index]]
         }
     }
 
