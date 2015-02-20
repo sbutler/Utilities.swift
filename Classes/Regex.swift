@@ -44,13 +44,13 @@ public class Regex {
             var pos: String.Index = str.startIndex
 
             for match in matches {
-                let range = match.ranges[0]
+                if let range = match.ranges[0] {
+                    buffer += str[pos..<range.startIndex]
+                    buffer += "\\"
+                    buffer += str[range]
 
-                buffer += str[pos..<range.startIndex]
-                buffer += "\\"
-                buffer += str[range]
-
-                pos = range.endIndex
+                    pos = range.endIndex
+                }
             }
 
             buffer += str[pos..<str.endIndex]
@@ -69,14 +69,14 @@ public class Regex {
         /** The string that was matched. */
         public let subject: String
         /** Ranges of the matches, with the entire pattern match in 0. */
-        public let ranges: [Range<String.Index>]
+        public let ranges: [Range<String.Index>?]
         /** Count of the capture groups, including the entire pattern match. */
         public var count: Int { return ranges.count }
 
         init(subject: String, matchResult: NSTextCheckingResult) {
             self.subject = subject
 
-            var ranges: [Range<String.Index>] = []
+            var ranges: [Range<String.Index>?] = []
 
             // Check the overall match first. Shouldn't happen
             if matchResult.range.location == NSNotFound {
@@ -86,10 +86,15 @@ public class Regex {
             // Get the capture groups
             for matchRangeIdx in 0..<matchResult.numberOfRanges {
                 let matchRange = matchResult.rangeAtIndex(matchRangeIdx)
-                let beginIndex = advance(subject.startIndex, matchRange.location)
-                let endIndex = advance(beginIndex, matchRange.length)
 
-                ranges.append(beginIndex..<endIndex)
+                if matchRange.location == NSNotFound {
+                    ranges.append(nil)
+                } else {
+                    let beginIndex = advance(subject.startIndex, matchRange.location)
+                    let endIndex = advance(beginIndex, matchRange.length)
+
+                    ranges.append(beginIndex..<endIndex)
+                }
             }
 
             self.ranges = ranges
@@ -101,8 +106,12 @@ public class Regex {
 
             :returns: Subscript for the capture group.
         */
-        public subscript(index: Int) -> String {
-            return subject[ranges[index]]
+        public subscript(index: Int) -> String? {
+            if let range = ranges[index] {
+                return subject[range]
+            } else {
+                return nil
+            }
         }
     }
 
@@ -201,4 +210,3 @@ public class Regex {
         return search(subject) != nil
     }
 }
-
