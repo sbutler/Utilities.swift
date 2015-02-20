@@ -1,2 +1,3 @@
 # Utilities.swift
-Utility classes for Swift
+
+Collection of simple classes I've written or adapted for Swift.
