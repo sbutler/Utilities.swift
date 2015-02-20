@@ -108,7 +108,7 @@ public class Regex {
 
     /** Initializes with an already compiled NSRegularExpression object.
 
-        :param expression Regular expression used in matches.
+        :param: expression Regular expression used in matches.
     */
     public init(_ expression: NSRegularExpression) {
         self.pattern = expression.pattern
@@ -193,9 +193,9 @@ public class Regex {
 
     /** Tries to match a string, not performing any special anchoring.
 
-    :param: subject The string to match against.
+        :param: subject The string to match against.
 
-    :returns: True if the string matches anywhere, else false.
+        :returns: True if the string matches anywhere, else false.
     */
     public func testSearch(subject: String) -> Bool {
         return search(subject) != nil
